@@ -33,7 +33,8 @@ class MainActivity : BaseMainActivity() {
         handleEvent()
         commonTab.textSelectColor = Color.RED
         commonTab.textUnselectColor = Color.BLACK
-        goAct(TestListActivity::class)
+        goAct(CommonWebActivity::class)
+        finish()
     }
 
     private fun setBar(){

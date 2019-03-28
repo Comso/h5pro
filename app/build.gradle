@@ -36,4 +36,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation project(':h5lib')
     implementation 'com.uama:lib-zxing:1.0.1'
+    implementation 'com.github.UamaHZ:x5webview:1.0.6'
 }
