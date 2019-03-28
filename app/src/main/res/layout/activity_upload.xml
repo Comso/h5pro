@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/recyclerView"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <com.cosmo.common.widget.CommonImgView
+        android:id="@+id/commonImageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:actualImageScaleType="focusCrop"
+        app:placeholderImage="@mipmap/ic_launcher"
+        app:placeholderImageScaleType="focusCrop"
+        app:failureImage="@mipmap/ic_launcher"
+        app:failureImageScaleType="focusCrop"
+        app:roundAsCircle="true"
+        app:roundedCornerRadius="@dimen/dp_10"
+        app:roundTopLeft="true"
+        app:roundTopRight="true"
+        app:roundBottomLeft="true"
+        app:roundBottomRight="true"
+        android:layout_centerInParent="true"
+
+        />
+
+    <Button
+        android:id="@+id/uploadBtn"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="OSS上传"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/commonImageView"/>
+
+
+
+</RelativeLayout>
+
+
+
+

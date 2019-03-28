@@ -1,0 +1,38 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
+    defaultConfig {
+        applicationId "com.uama.app"
+        minSdkVersion 18
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+   /* 要使Google能够抓取您的应用内容并允许用户从搜索结果中进入您的应用，您必须为manifest中的相关活动添加intent filters。
+    它们允许深入链接到您的任何活动中的内容。例如，用户可以点击深层链接以查看购物应用中的页面，该页面描述用户正在搜索的产品。*/
+    lintOptions {
+        disable 'GoogleAppIndexingWarning'
+    }
+}
+
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    implementation project(':h5lib')
+}
