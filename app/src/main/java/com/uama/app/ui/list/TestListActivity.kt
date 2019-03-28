@@ -17,34 +17,49 @@ import kotlinx.android.synthetic.main.activity_list.*
  *Email:ruchao.jiang@uama.com.cn
  */
 class TestListActivity :BaseActivity() {
-    private var position:Int = 0
+    //private var position:Int = 0
     private val adapter by lazy { NameListAdapter() }
     private val list:MutableList<String> = mutableListOf()
     override fun setLayout(): Int = R.layout.activity_list
-    override fun setBarTitle(): String ="ListActivity"
+    override fun setBarTitle(): String ="H5ListActivity"
+    private val mTitles = arrayOf("网络状态", "通信录", "拨打电话", "发送短信", "扫一扫")
     override fun start() {
-        for (index in 1..20){
-            position++
-            list.add("Cosmo is $position")
+        for (index in mTitles){
+            list.add(index)
         }
 
         recyclerView.linearLayoutManager()
         adapter.setNewData(list)
         recyclerView.adapter = adapter
-        refreshView.isEnabled = true
-        adapter.setEmptyView(R.layout.list_empty,recyclerView)
-        refreshView.setOnRefreshListener {
-            refreshView.refreshComplete()
-    }
-
         adapter.setOnItemClickListener { _, _, position ->
-            showToast("click : ${list[position]}")
-            RxBus.getInstance().send(MainEvent())
-            holderView.visible()
+            when(position){
+                //网络状态
+                0->{}
+                //通信录
+                1->{}
+                //拨打电话
+                2->{}
+                //发送短信
+                3->{}
+                //扫一扫
+                4->{}
+            }
         }
 
+//        refreshView.isEnabled = true
+//        adapter.setEmptyView(R.layout.list_empty,recyclerView)
+//        refreshView.setOnRefreshListener {
+//            refreshView.refreshComplete()
+//    }
 
-        adapter.setOnLoadMoreListener({
+//        adapter.setOnItemClickListener { _, _, position ->
+//            showToast("click : ${list[position]}")
+//            RxBus.getInstance().send(MainEvent())
+//            holderView.visible()
+//        }
+
+
+       /* adapter.setOnLoadMoreListener({
             if (position >= 100){
                 adapter.loadMoreEnd()
             }else{
@@ -57,7 +72,7 @@ class TestListActivity :BaseActivity() {
             }
 
         },recyclerView)
-        adapter.disableLoadMoreIfNotFullPage()
+        adapter.disableLoadMoreIfNotFullPage()*/
 
     }
 }
