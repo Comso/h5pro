@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.uama.app.repository.RetrofitInterceptor;
+import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
 
 import java.util.Collections;
@@ -35,6 +36,7 @@ public class UamaApp extends Application implements Application.ActivityLifecycl
         super.onCreate();
         mContext = this;
         Fresco.initialize(this);
+        ZXingLibrary.initDisplayOpinion(this);
 /*
         OSSCredentialProvider credentialProvider = new OSSCustomSignerCredentialProvider() {
             @Override

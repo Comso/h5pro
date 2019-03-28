@@ -35,4 +35,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.12'
     implementation project(':h5lib')
+    implementation 'com.uama:lib-zxing:1.0.1'
 }

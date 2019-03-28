@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fl_my_container"
+        />
+    <!--标题栏-->
+    <RelativeLayout
+        android:id="@+id/top_mask"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    </RelativeLayout>
+    <!--扫描框-->
+    <RelativeLayout
+        android:layout_width="222dp"
+        android:layout_height="220dp"
+        android:layout_marginTop="100dp"
+        android:layout_gravity="center_horizontal">
+        <!--二维码扫描框动画-->
+        <LinearLayout
+            android:id="@+id/ll_qr_code"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/capture"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone">
+            <ImageView
+                android:id="@+id/capture_scan_line"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/scan_line"
+                android:contentDescription="@string/app_name" />
+        </LinearLayout>
+        <!--快递单扫描单动画-->
+        <RelativeLayout
+            android:id="@+id/ll_exp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+            <LinearLayout
+                android:id="@+id/ll1"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical"
+                android:background="@drawable/capture"
+                >
+                <ImageView
+                    android:id="@+id/capture_scan_line_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/scan_line_vertical"
+                    android:contentDescription="@string/app_name" />
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+    <!--扫码提示-->
+    <TextView
+        android:id="@+id/tv_code_des"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="340dp"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        android:text="请将二维码放入框中"/>
+
+</FrameLayout>
