@@ -6,5 +6,8 @@ package com.uama.app.utils;
  * Email:ruchao.jiang@uama.com.cn
  */
 public class H5RouteUtils {
+    public static void _app_sendSMG(){
+
+    }
 
 }
