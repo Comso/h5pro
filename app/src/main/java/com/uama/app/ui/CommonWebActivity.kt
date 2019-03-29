@@ -1,5 +1,6 @@
 package com.uama.app.ui
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -15,27 +16,35 @@ import com.uama.weight.uama_webview.BridgeWebView
 import com.uama.weight.uama_webview.BridgeWebViewClient
 import com.uama.weight.uama_webview.CallBackFunction
 import androidx.appcompat.app.AppCompatActivity
+import com.afollestad.materialdialogs.MaterialDialog
+import com.blankj.utilcode.util.PhoneUtils
+import com.blankj.utilcode.util.ToastUtils
+import com.cosmo.common.base.BaseActivity
+import com.cosmo.common.extension.COMMON_RECODE
+import com.cosmo.common.extension.goActForResult
+import com.cosmo.common.permission.PermissionResultListener
+import com.cosmo.common.permission.PermissionUtils
+import com.google.gson.Gson
+import com.uama.app.utils.H5RouteUtils
+import com.uuzuche.lib_zxing.activity.CaptureActivity
 
 /**
  * Author:ruchao.jiang
  * Created: 2019/3/28 19:53
  * Email:ruchao.jiang@uama.com.cn
  */
-class CommonWebActivity : AppCompatActivity() {
-
+class CommonWebActivity : BaseActivity() {
     private var webView: BridgeWebView? = null
+    override fun setLayout(): Int =R.layout.activity_web
+    override fun setBarTitle(): String = "Webview"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_web)
-        init()
-    }
-
-    fun init() {
+    override fun start() {
+        mContext = this
         webView = findViewById(R.id.webView)
         initWebview(this, webView!!)
-        webView!!.loadUrl("http://192.168.10.39:9930/test.html")
+        webView?.loadUrl("http://192.168.10.39:9930/test.html")
     }
+
 
 
     override fun onDestroy() {
@@ -91,31 +100,60 @@ class CommonWebActivity : AppCompatActivity() {
                 }
             })
 
-            // 跳转方法
-            webView.registerHandler("_app_tel") { data, function -> }
-
-
-            // 注册外部桥
-            webView.registerHandler("_app_third_party_jump") { data, function -> }
-
-            webView.setDownloadListener { url, userAgent, contentDisposition, mimetype, contentLength ->
-                if (url != null && url.startsWith("http://"))
-                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            // 拨打电话
+            webView.registerHandler("_app_tel") { data, function ->
+                MaterialDialog(context).show {
+                    title(text = "提示")
+                    message(text = "确定拨打$data?")
+                    positiveButton {
+                        it.dismiss()
+                        PhoneUtils.dial(data)
+                    }
+                    negativeButton {
+                        it.dismiss()
+                    }
+                }
             }
-        }
 
-        fun registerJumper(context: Context, webView: BridgeWebView, isHomeFragment: Boolean) {
-            // 跳转方法
-            webView.registerHandler("_app_page_jump") { data, function -> }
 
-            // 注册外部桥
-            webView.registerHandler("_app_third_party_jump") { data, function -> }
 
-            webView.setDownloadListener { url, userAgent, contentDisposition, mimetype, contentLength ->
-                if (url != null && url.startsWith("http://"))
-                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+
+            // 扫一扫
+            webView.registerHandler("_app_scan") { data, function ->
+                PermissionUtils.checkPermission(context as BaseActivity, PermissionResultListener {
+                    val intent = Intent(context, CaptureActivity::class.java)
+                    context.startActivityForResult(intent, COMMON_RECODE)
+                }
+                        ,Manifest.permission.CAMERA
+                        ,Manifest.permission.READ_EXTERNAL_STORAGE
+                        ,Manifest.permission.READ_EXTERNAL_STORAGE)
             }
+
+
+
+           /* webView.registerHandler("_app_getNetstatus", object :BridgeHandler{
+                override fun handler(data: String?, call: CallBackFunction?) {
+                    val dat = H5RouteUtils._app_getNetstatus()
+                    val callBa = Gson().toJson(dat)
+                    call?.onCallBack(callBa)
+                }
+            })*/
+
+
+            //webView.registerHandler("_app_getNetstatus",hand)
+
+
+            // 网络状态
+            /*webView.registerHandler("_app_getNetstatus") { data, function ->
+                val dat = H5RouteUtils._app_getNetstatus()
+                val callBa = Gson().toJson(dat)
+                 function.onCallBack(callBa)
+                 function.onCallBack(callBa)
+                 ToastUtils.showShort(data.netType.toString())
+            }*/
+
         }
     }
-
 }
+
+
