@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.webkit.ValueCallback
 
 import com.tencent.smtt.sdk.DownloadListener
@@ -17,6 +18,7 @@ import com.uama.weight.uama_webview.BridgeWebViewClient
 import com.uama.weight.uama_webview.CallBackFunction
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.materialdialogs.MaterialDialog
+import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.PhoneUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.cosmo.common.base.BaseActivity
@@ -26,7 +28,10 @@ import com.cosmo.common.permission.PermissionResultListener
 import com.cosmo.common.permission.PermissionUtils
 import com.google.gson.Gson
 import com.uama.app.utils.H5RouteUtils
+import com.uama.app.utils.H5RouteUtils.Companion.fileToBase64
 import com.uuzuche.lib_zxing.activity.CaptureActivity
+import java.io.File
+import java.io.InputStream
 
 /**
  * Author:ruchao.jiang
@@ -42,7 +47,7 @@ class CommonWebActivity : BaseActivity() {
         mContext = this
         webView = findViewById(R.id.webView)
         initWebview(this, webView!!)
-        webView?.loadUrl("http://192.168.10.39:9930/test.html")
+        webView?.loadUrl("file:///android_asset/test.html")
     }
 
 
@@ -115,7 +120,12 @@ class CommonWebActivity : BaseActivity() {
                 }
             }
 
+            webView.registerHandler("_app_selectPics"){data, function ->
+                val path= Environment.getExternalStorageDirectory().absolutePath + File.separator + "lvman/crop/1535697426066.png"
+                val file = FileUtils.getFileByPath(path)
 
+                function?.onCallBack(Gson().toJson(fileToBase64(file)))
+            }
 
 
             // 扫一扫
@@ -154,6 +164,9 @@ class CommonWebActivity : BaseActivity() {
 
         }
     }
+
 }
+
+
 
 

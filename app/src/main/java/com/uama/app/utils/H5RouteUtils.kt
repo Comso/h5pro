@@ -3,10 +3,13 @@ package com.uama.app.utils
 import android.Manifest
 import android.app.Application
 import android.provider.ContactsContract
+import android.util.Base64
 import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.NetworkUtils
 import com.blankj.utilcode.util.PermissionUtils
-import java.security.Permission
+import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
 
 class H5RouteUtils {
     companion object {
@@ -76,6 +79,24 @@ class H5RouteUtils {
             cursor?.close()
             return phoneBookList
         }
+
+        fun fileToBase64(file:File):String{
+            var base64:String?  = null
+            var inStream:InputStream? = null
+            try {
+                inStream = FileInputStream(file)
+                val buff = ByteArray(inStream.available())
+                inStream.read(buff)
+                base64 =   Base64.encodeToString(buff, Base64.DEFAULT)
+            } catch (e:Exception ) {
+                e.printStackTrace()
+            } finally {
+                inStream?.close()
+            }
+            return base64?:""
+        }
+
+
     }
 
 }
