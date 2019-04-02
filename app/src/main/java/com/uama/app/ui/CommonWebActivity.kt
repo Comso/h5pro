@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.os.Environment
 import android.webkit.ValueCallback
 import android.widget.Toast
@@ -16,27 +17,20 @@ import com.cosmo.common.matisse.ImagePicker
 import com.cosmo.common.permission.PermissionResultListener
 import com.cosmo.common.permission.PermissionUtils
 import com.google.gson.Gson
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse
 import com.tencent.smtt.sdk.WebSettings
+import com.tencent.smtt.sdk.WebView
 import com.uama.app.R
 import com.uama.app.entity.DialBean
 import com.uama.app.entity.PickBean
 import com.uama.app.entity.PreViewBean
 import com.uama.app.entity.ScanBean
 import com.uama.app.utils.H5RouteUtils
-import com.uama.app.utils.H5RouteUtils.Companion.fileToBase64
 import com.uama.weight.uama_webview.*
-import com.tencent.smtt.export.external.interfaces.WebResourceRequest
-import com.tencent.smtt.export.external.interfaces.WebResourceResponse
-import com.tencent.smtt.sdk.WebSettings
-import com.tencent.smtt.sdk.WebView
-import com.uama.app.R
-import com.uama.weight.uama_webview.BridgeWebChromeClient
-import com.uama.weight.uama_webview.BridgeWebView
-import com.uama.weight.uama_webview.BridgeWebViewClient
 import com.uuzuche.lib_zxing.activity.CaptureActivity
 import com.uuzuche.lib_zxing.activity.CodeUtils
 import java.io.File
-
 import java.io.FileInputStream
 
 /**
