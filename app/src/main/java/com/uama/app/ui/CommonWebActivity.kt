@@ -4,34 +4,26 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import android.os.Environment
 import android.webkit.ValueCallback
-
-import com.tencent.smtt.sdk.DownloadListener
-import com.tencent.smtt.sdk.WebSettings
-import com.uama.app.R
-import com.uama.weight.uama_webview.BridgeHandler
-import com.uama.weight.uama_webview.BridgeWebChromeClient
-import com.uama.weight.uama_webview.BridgeWebView
-import com.uama.weight.uama_webview.BridgeWebViewClient
-import com.uama.weight.uama_webview.CallBackFunction
-import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.materialdialogs.MaterialDialog
-import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.PhoneUtils
-import com.blankj.utilcode.util.ToastUtils
 import com.cosmo.common.base.BaseActivity
 import com.cosmo.common.extension.COMMON_RECODE
-import com.cosmo.common.extension.goActForResult
 import com.cosmo.common.permission.PermissionResultListener
 import com.cosmo.common.permission.PermissionUtils
 import com.google.gson.Gson
-import com.uama.app.utils.H5RouteUtils
-import com.uama.app.utils.H5RouteUtils.Companion.fileToBase64
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse
+import com.tencent.smtt.sdk.WebSettings
+import com.tencent.smtt.sdk.WebView
+import com.uama.app.R
+import com.uama.weight.uama_webview.BridgeWebChromeClient
+import com.uama.weight.uama_webview.BridgeWebView
+import com.uama.weight.uama_webview.BridgeWebViewClient
 import com.uuzuche.lib_zxing.activity.CaptureActivity
 import java.io.File
-import java.io.InputStream
+import java.io.FileInputStream
 
 /**
  * Author:ruchao.jiang
@@ -69,7 +61,15 @@ class CommonWebActivity : BaseActivity() {
     }
 
     companion object {
-
+        fun getWebResourceResponse(url:String=""):WebResourceResponse{
+            val path= Environment.getExternalStorageDirectory().absolutePath + File.separator + "lvman/crop/1535697426066.png"
+            val webResourceResponse = WebResourceResponse()
+            webResourceResponse.encoding = "gzip"
+            webResourceResponse.mimeType = "image/png"
+            val fileStream = FileInputStream(path)
+            webResourceResponse.data = fileStream
+            return webResourceResponse
+        }
 
         fun initWebview(context: Context, webView: BridgeWebView) {
             val settings = webView.settings
@@ -79,7 +79,22 @@ class CommonWebActivity : BaseActivity() {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                 settings.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
             }
-            val webViewClient = BridgeWebViewClient(context, webView)
+
+            val webViewClient =object : BridgeWebViewClient(context, webView){
+                override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse?{
+                    if(request.url?.path?.contains("jams")==true){
+                        return getWebResourceResponse()
+                    }
+                    return null
+                }
+
+                override fun shouldInterceptRequest(view:WebView, urlStr:String ):WebResourceResponse?{
+                    if(urlStr.contains("jams")){
+                        return getWebResourceResponse()
+                    }
+                    return null
+                }
+            }
             webView.webViewClient = webViewClient
             webView.webChromeClient = BridgeWebChromeClient(object : BridgeWebChromeClient.FileChooserCallback {
                 override fun showFileChooserUris(valueCallback: ValueCallback<Array<Uri>>) {
@@ -90,17 +105,12 @@ class CommonWebActivity : BaseActivity() {
 
                 }
             })
-
-            webViewClient.registWebClientListener(object : BridgeWebViewClient.WebClientListener {
-                override fun setLoadFail() {
-
-                }
-
-                override fun pageLoadFinished() {
+            webView.webChromeClient = BridgeWebChromeClient(object : BridgeWebChromeClient.FileChooserCallback {
+                override fun showFileChooserUris(valueCallback: ValueCallback<Array<Uri>>) {
 
                 }
 
-                override fun webviewImageClick(list: List<String>, position: Int) {
+                override fun showFileChooserUri(valueCallback: ValueCallback<Uri>) {
 
                 }
             })
@@ -122,9 +132,9 @@ class CommonWebActivity : BaseActivity() {
 
             webView.registerHandler("_app_selectPics"){data, function ->
                 val path= Environment.getExternalStorageDirectory().absolutePath + File.separator + "lvman/crop/1535697426066.png"
-                val file = FileUtils.getFileByPath(path)
+//                val file = FileUtils.getFileByPath(path)
 
-                function?.onCallBack(Gson().toJson(fileToBase64(file)))
+                function?.onCallBack(Gson().toJson("jams"))
             }
 
 

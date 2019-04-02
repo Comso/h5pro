@@ -104,8 +104,8 @@
 
 						window.WebViewJavascriptBridge.callHandler('_app_selectPics', opt, function responseCallback (res) {
 						var img=document.getElementById('test-img');
-						var imgSrc = "data:img/png;base64,"+JSON.parse(res);
-					      img.src =imgSrc;
+						<!--var imgSrc = "data:img/png;base64,"+JSON.parse(res);-->
+					      img.src =JSON.parse(res);
 							alert(imgSrc)
 						});
 					} else {
