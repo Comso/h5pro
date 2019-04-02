@@ -7,31 +7,30 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.webkit.ValueCallback
-
-import com.tencent.smtt.sdk.DownloadListener
-import com.tencent.smtt.sdk.WebSettings
-import com.uama.app.R
-import com.uama.weight.uama_webview.BridgeHandler
-import com.uama.weight.uama_webview.BridgeWebChromeClient
-import com.uama.weight.uama_webview.BridgeWebView
-import com.uama.weight.uama_webview.BridgeWebViewClient
-import com.uama.weight.uama_webview.CallBackFunction
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.PhoneUtils
-import com.blankj.utilcode.util.ToastUtils
 import com.cosmo.common.base.BaseActivity
 import com.cosmo.common.extension.COMMON_RECODE
-import com.cosmo.common.extension.goActForResult
+import com.cosmo.common.extension.toJsonStringByGson
+import com.cosmo.common.matisse.ImagePicker
 import com.cosmo.common.permission.PermissionResultListener
 import com.cosmo.common.permission.PermissionUtils
 import com.google.gson.Gson
+import com.tencent.smtt.sdk.WebSettings
+import com.uama.app.R
+import com.uama.app.entity.DialBean
+import com.uama.app.entity.PickBean
+import com.uama.app.entity.PreViewBean
+import com.uama.app.entity.ScanBean
 import com.uama.app.utils.H5RouteUtils
 import com.uama.app.utils.H5RouteUtils.Companion.fileToBase64
+import com.uama.weight.uama_webview.*
 import com.uuzuche.lib_zxing.activity.CaptureActivity
+import com.uuzuche.lib_zxing.activity.CodeUtils
 import java.io.File
-import java.io.InputStream
+
 
 /**
  * Author:ruchao.jiang
@@ -39,9 +38,12 @@ import java.io.InputStream
  * Email:ruchao.jiang@uama.com.cn
  */
 class CommonWebActivity : BaseActivity() {
+
     private var webView: BridgeWebView? = null
     override fun setLayout(): Int =R.layout.activity_web
     override fun setBarTitle(): String = "Webview"
+
+
 
     override fun start() {
         mContext = this
@@ -70,7 +72,7 @@ class CommonWebActivity : BaseActivity() {
 
     companion object {
 
-
+        private var mFunction:CallBackFunction? = null
         fun initWebview(context: Context, webView: BridgeWebView) {
             val settings = webView.settings
             settings.allowFileAccess = true
@@ -130,6 +132,7 @@ class CommonWebActivity : BaseActivity() {
 
             // 扫一扫
             webView.registerHandler("_app_scan") { data, function ->
+                mFunction = function
                 PermissionUtils.checkPermission(context as BaseActivity, PermissionResultListener {
                     val intent = Intent(context, CaptureActivity::class.java)
                     context.startActivityForResult(intent, COMMON_RECODE)
@@ -140,28 +143,75 @@ class CommonWebActivity : BaseActivity() {
             }
 
 
-
-           /* webView.registerHandler("_app_getNetstatus", object :BridgeHandler{
+            //发短信
+            webView.registerHandler("_app_sendSMG", object :BridgeHandler{
                 override fun handler(data: String?, call: CallBackFunction?) {
-                    val dat = H5RouteUtils._app_getNetstatus()
-                    val callBa = Gson().toJson(dat)
-                    call?.onCallBack(callBa)
+                    data?.let {
+                        val bean: DialBean? = Gson().fromJson(it,DialBean::class.java)
+                        PhoneUtils.sendSms(bean?.phone?:"", bean?.text?:"")
+                    }
+                   //
                 }
-            })*/
+            })
+
+
+            //选择图片
+            webView.registerHandler("_app_selectPics") { data, call ->
+                data?.let {
+                    val bean: PickBean? = Gson().fromJson(it,PickBean::class.java)
+                    bean?.let {
+                        mFunction = call
+                        ImagePicker.pick(context)
+
+                    }
+                }
+            }
+
+
+            //图片预览
+            webView.registerHandler("_app_previewPic", object :BridgeHandler{
+                override fun handler(data: String?, call: CallBackFunction?) {
+                    data?.let {
+                        val bean: PreViewBean = Gson().fromJson(it,PreViewBean::class.java)
+                        val intent = Intent(context,ImagePreViewActvity::class.java)
+                        intent.putExtra("bean",bean)
+                        context.startActivity(intent)
+                    }
+                }
+            })
 
 
             //webView.registerHandler("_app_getNetstatus",hand)
 
 
             // 网络状态
-            /*webView.registerHandler("_app_getNetstatus") { data, function ->
-                val dat = H5RouteUtils._app_getNetstatus()
-                val callBa = Gson().toJson(dat)
-                 function.onCallBack(callBa)
-                 function.onCallBack(callBa)
-                 ToastUtils.showShort(data.netType.toString())
-            }*/
+            webView.registerHandler("_app_getNetstatus",object :BridgeHandler{
+                override fun handler(data: String?, call: CallBackFunction?) {
+                    val dat = H5RouteUtils._app_getNetstatus()
+                    val callBa = Gson().toJson(dat)
+                    call?.onCallBack(callBa)
+                }
+            })
 
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == COMMON_RECODE) {
+            data?.let {
+                val bundle: Bundle? = it.extras
+                bundle?.let {
+                    if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
+                        val result:String? = bundle.getString(CodeUtils.RESULT_STRING)
+                        val scanBean = ScanBean(result)
+                        mFunction?.onCallBack(scanBean.toJsonStringByGson())
+                    } else {
+                        Toast.makeText(mContext, "解析二维码失败", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+            }
         }
     }
 

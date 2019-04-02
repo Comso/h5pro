@@ -18,7 +18,7 @@ class CommonImgView : SimpleDraweeView {
 
 
     fun loadImg(url:String?){
-        //if (!url.isNullOrEmpty()) setImageURI(Uri.parse(url))
+        if (!url.isNullOrEmpty()) setImageURI(Uri.parse(url))
     }
 
     /**

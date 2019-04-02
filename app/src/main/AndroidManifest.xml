@@ -69,7 +69,7 @@
         <activity android:name=".ui.SegmentActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.SlidingActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.CommonWebActivity" android:screenOrientation="portrait"/>
-
+        <activity android:name=".ui.ImagePreViewActvity" android:screenOrientation="portrait"/>
        <provider
                 android:name="androidx.core.content.FileProvider"
                 android:authorities="com.uama.app.fileprovider"
