@@ -27,15 +27,15 @@ import com.zhihu.matisse.listener.OnSelectedListener
  */
 object ImagePicker {
     const val REQUEST_CODE_CHOOSE = 10800
-    fun pick(context: Context) {
+    fun pick(context: Context,maxNumber:Int = 9,enableCapture:Boolean = true) {
         PermissionUtils.checkPermission(context as BaseActivity, PermissionResultListener {
             Matisse
                 .from(context)
                 .choose(MimeType.of(MimeType.JPEG, MimeType.PNG, MimeType.WEBP), false)
                 .countable(true)
-                .capture(true)
+                .capture(enableCapture)
                 .captureStrategy(CaptureStrategy(true, "com.uama.app.fileprovider","release"))
-                .maxSelectable(9)
+                .maxSelectable(maxNumber)
                 .addFilter(GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
                 .gridExpectedSize(context.resources.getDimensionPixelSize(R.dimen.grid_expected_size))
                 .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)

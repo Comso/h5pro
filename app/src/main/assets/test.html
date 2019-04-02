@@ -102,11 +102,11 @@
 							cbName: '_app_getPicList'
 						}
 
-						window.WebViewJavascriptBridge.callHandler('_app_selectPics', opt, function responseCallback (res) {
+						window.WebViewJavascriptBridge.callHandler('chooseImage', opt, function responseCallback (res) {
 						var img=document.getElementById('test-img');
-						<!--var imgSrc = "data:img/png;base64,"+JSON.parse(res);-->
-					      img.src =JSON.parse(res);
-							alert(imgSrc)
+						res = JSON.parse(res).tempFilePaths;
+						alert(res)
+					     img.src =res[0];
 						});
 					} else {
 						alert('选择图片失败');
