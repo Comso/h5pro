@@ -49,7 +49,7 @@ class CommonWebActivity : BaseActivity() {
         webView = findViewById(R.id.webView)
         initWebview(this, webView!!)
 //        webView?.loadUrl("file:///android_asset/test.html")
-        webView?.loadUrl("http://192.168.10.39:8081/#/pages/hybrid/index")
+        webView?.loadUrl("http://192.168.10.39:8083/")
     }
 
 
